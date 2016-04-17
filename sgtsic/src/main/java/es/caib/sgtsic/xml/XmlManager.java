@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package es.caib.sgtsic.xml;
-
 
 import es.caib.sgtsic.mail.ByteArrayDataSource;
 import java.io.ByteArrayOutputStream;
@@ -34,13 +31,14 @@ import javax.xml.transform.stream.StreamSource;
  * @author gdeignacio
  * @param <T>
  */
-public abstract class XmlManager<T> {
+public class XmlManager<T> {
 
     private final Class<T> clazz;
 
     private final JAXBContext jaxbContext;
 
     public XmlManager(Class<T> clazz) throws JAXBException {
+        
         this.clazz = clazz;
         this.jaxbContext = JAXBContext.newInstance(clazz);
     }
@@ -68,27 +66,30 @@ public abstract class XmlManager<T> {
     }
 
     public DataHandler generateXml(T item) throws JAXBException {
-        
+
         ByteArrayDataSource bads = new ByteArrayDataSource();
-        
+
         bads.setContentType("application/xml");
         bads.setBytes(marshal(item).toByteArray());
-        
+
         return new DataHandler(bads);
-        
+
     }
 
     public T generateItem(DataHandler document) throws JAXBException, IOException {
         return unmarshal(document.getInputStream());
     }
-    
-    
+
     public byte[] generateXmlByteArray(T item) throws JAXBException {
-        
+
         return marshal(item).toByteArray();
-        
+
     }
-    
-   
+
+    public String generateXmlString(T item) throws JAXBException {
+
+        return marshal(item).toString();
+
+    }
 
 }

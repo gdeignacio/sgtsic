@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.activation.DataHandler;
@@ -30,16 +31,16 @@ import javax.activation.DataHandler;
  * @author gdeignacio
  */
 public class Zips {
-    
-    public DataHandler generateZip(List<DataHandler> documents) throws IOException {
+
+    public static DataHandler generateZip(Map<String, DataHandler> documents) throws IOException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ZipOutputStream zip = new ZipOutputStream(baos);
 
-        for (DataHandler document : documents) {
+        for (String key : documents.keySet()) {
 
-            InputStream is = new ByteArrayInputStream(DataHandlers.dataHandlerToByteArray(document));
-            ZipEntry zipEntry = new ZipEntry(document.getName());
+            InputStream is = new ByteArrayInputStream(DataHandlers.dataHandlerToByteArray(documents.get(key)));
+            ZipEntry zipEntry = new ZipEntry(key);
             zip.putNextEntry(zipEntry);
             ByteStreams.copy(is, zip);
             zip.closeEntry();
@@ -52,6 +53,5 @@ public class Zips {
         return DataHandlers.byteArrayToDataHandler(baos.toByteArray(), "application/zip");
 
     }
-    
-    
+
 }

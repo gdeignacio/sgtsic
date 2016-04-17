@@ -26,9 +26,12 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author gdeignacio
  */
-public class ProvidedContentDownloader extends HttpServlet { 
-     /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+public class ProvidedContentDownloader extends HttpServlet {
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -36,14 +39,13 @@ public class ProvidedContentDownloader extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        
+
         String contentType = request.getParameter("Content-Type");
-        contentType=(contentType!=null)?contentType:"text/plain";
-        
+        contentType = (contentType != null) ? contentType : "text/plain";
+
         String fileName = request.getParameter("filename");
-        fileName=(fileName!=null)?fileName:"DownloadContent";
-        
+        fileName = (fileName != null) ? fileName : "DownloadContent";
+
         response.setDateHeader("Date", System.currentTimeMillis());
         response.setHeader("Content-Type", contentType);
         response.setHeader("Cache-Control", "cache");
@@ -52,13 +54,13 @@ public class ProvidedContentDownloader extends HttpServlet {
 
         String attachment = request.getParameter("attachment");
 
-        if (attachment == null){
+        if (attachment == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        
+
         byte[] b = attachment.getBytes();
-        
+
         OutputStream os = response.getOutputStream();
         os.write(b);
 
@@ -68,8 +70,9 @@ public class ProvidedContentDownloader extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -81,8 +84,9 @@ public class ProvidedContentDownloader extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -94,8 +98,9 @@ public class ProvidedContentDownloader extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
@@ -103,4 +108,3 @@ public class ProvidedContentDownloader extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 }
-

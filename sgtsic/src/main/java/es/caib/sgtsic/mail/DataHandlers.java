@@ -30,7 +30,7 @@ import javax.activation.DataHandler;
  * @author gdeignacio
  */
 public class DataHandlers {
-    
+
     public static byte[] dataHandlerToByteArray(DataHandler dataHandler) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         dataHandler.writeTo(output);
@@ -49,18 +49,17 @@ public class DataHandlers {
         InputStream is = new BufferedInputStream(new ByteArrayInputStream(arrayByte));
 
         String mimetype = "";
-        
+
         try {
-            mimetype = URLConnection.guessContentTypeFromStream(is); 
+            mimetype = URLConnection.guessContentTypeFromStream(is);
         } catch (IOException ex) {
             Logger.getLogger(DataHandlers.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         ByteArrayDataSource dataSource = new ByteArrayDataSource(arrayByte, mimetype);
-        
+
         return new DataHandler(dataSource);
 
     }
 
-    
 }

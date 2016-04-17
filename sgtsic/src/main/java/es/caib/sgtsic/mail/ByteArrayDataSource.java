@@ -31,7 +31,7 @@ public class ByteArrayDataSource implements javax.activation.DataSource {
 
     private byte[] bytes;
 
-    public ByteArrayDataSource() {  
+    public ByteArrayDataSource() {
     }
 
     public void setBytes(byte[] bytes) {
@@ -69,7 +69,7 @@ public class ByteArrayDataSource implements javax.activation.DataSource {
         final ByteArrayDataSource bads = this;
         final ByteArrayOutputStream baos
                 = new ByteArrayOutputStream();
-		// return an outputstream that sets my byte array
+        // return an outputstream that sets my byte array
         // when it is closed.
         return new FilterOutputStream(baos) {
             public void close() throws IOException {
