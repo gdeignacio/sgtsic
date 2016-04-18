@@ -19,6 +19,7 @@ import es.caib.sgtsic.mail.ByteArrayDataSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import javax.activation.DataHandler;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -31,7 +32,7 @@ import javax.xml.transform.stream.StreamSource;
  * @author gdeignacio
  * @param <T>
  */
-public class XmlManager<T> {
+public abstract class XmlManager<T> {
 
     private final Class<T> clazz;
 
@@ -75,7 +76,22 @@ public class XmlManager<T> {
         return new DataHandler(bads);
 
     }
+    
+    public DataHandler generateXml(List<T> items) throws JAXBException{
+        
+        ByteArrayDataSource bads = new ByteArrayDataSource();
 
+        bads.setContentType("text/plain");
+        
+        byte[] b = generateXmlString(items).getBytes();
+        
+        bads.setBytes(b);
+
+        return new DataHandler(bads);
+        
+    }
+    
+  
     public T generateItem(DataHandler document) throws JAXBException, IOException {
         return unmarshal(document.getInputStream());
     }
@@ -90,6 +106,16 @@ public class XmlManager<T> {
 
         return marshal(item).toString();
 
+    }
+    
+    public String generateXmlString(List<T> items) throws JAXBException{
+        
+        StringBuilder mensajes = new StringBuilder();
+        for (T item : items) {
+            mensajes.append(generateXmlString(item));
+        }
+        return mensajes.toString();
+        
     }
 
 }
