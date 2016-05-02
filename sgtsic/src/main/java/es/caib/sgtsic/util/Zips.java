@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package es.caib.sgtsic.mail;
+package es.caib.sgtsic.util;
 
+import es.caib.sgtsic.util.DataHandlers;
 import com.google.common.io.ByteStreams;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

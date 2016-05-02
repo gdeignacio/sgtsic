@@ -15,7 +15,7 @@
  */
 package es.caib.sgtsic.xml;
 
-import es.caib.sgtsic.mail.ByteArrayDataSource;
+import es.caib.sgtsic.io.ByteArrayDataSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

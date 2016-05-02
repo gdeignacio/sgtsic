@@ -15,7 +15,7 @@
  */
 package es.caib.sgtsic.jooreports;
 
-import es.caib.sgtsic.mail.DataHandlers;
+import es.caib.sgtsic.util.DataHandlers;
 import es.caib.sgtsic.oo.pdfconverter.OOoStreamConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
