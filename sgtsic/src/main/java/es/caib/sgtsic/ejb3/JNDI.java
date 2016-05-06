@@ -22,6 +22,7 @@ package es.caib.sgtsic.ejb3;
 public class JNDI {
     
     
+    
     public static final String groupid = "es.caib";
     public static final String nomapp = "MATADEROS";
     public static final String packaging = "ear";
