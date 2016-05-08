@@ -21,8 +21,12 @@ package es.caib.sgtsic.ejb3;
  */
 public class JNDI {
     
+   // jndi:MATADEROS-ear-1.0-SNAPSHOT/SectorSanitarioFacade/local-es.caib.mataderos.back.persistence.ejb3.SectorSanitarioFacadeLocal
     
-    
+    //public static final String SECTOR_SANITARIO_FACADE_LOCAL          
+            
+            
+            
     public static final String groupid = "es.caib";
     public static final String nomapp = "MATADEROS";
     public static final String packaging = "ear";
@@ -48,16 +52,32 @@ public class JNDI {
     public static final String TipoGanadoFacadeLocal = JNDIPackaging + "TipoGanadoFacade/local-" + back_ejb3 + ".TipoGanadoFacadeLocal";
  
     
+    public static String getJndiPackaging(Class cl){
+        return cl.getPackage().getSpecificationTitle() + "/";
+    } 
     
+    public static String getJndiPackaging(String appBundleName){
+        return appBundleName + "/";
+    }
     
     /**
      *
      * @param cl
      * @return
      */
-    public static String getJndiName(Class cl){
-        return cl.getSimpleName() + "/local-" + cl.getCanonicalName() ;
+    public static String getJndiName(String appBundleName, Class cl){
+        return getJndiPackaging(appBundleName) + cl.getSimpleName() + "/local-" + cl.getCanonicalName() ;
     }
+    
+     /**
+     *
+     * @param cl
+     * @return
+     */
+    public static String getJndiName(Class cl){
+        return getJndiPackaging(cl) + cl.getSimpleName() + "/local-" + cl.getCanonicalName() ;
+    }
+    
     
     public static String getFacadeLocalClassName(Class entity){
         return entity.getSimpleName() + "FacadeLocal";
