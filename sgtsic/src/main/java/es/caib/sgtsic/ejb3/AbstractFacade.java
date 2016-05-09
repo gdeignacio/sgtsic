@@ -5,6 +5,7 @@
  */
 package es.caib.sgtsic.ejb3;
 
+import static es.caib.sgtsic.ejb3.Persistence.getUnitName;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -25,9 +26,15 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractFacade<T> {
     
+   
+    protected static String unitName = getUnitName(entityClass);
+    
+   
+    
     protected static Log log = LogFactory.getLog(AbstractFacade.class);
     
     private final Class<T> entityClass;
+    
     
 
     /**
