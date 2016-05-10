@@ -23,7 +23,7 @@ public class JNDI {
     
    // jndi:MATADEROS-ear-1.0-SNAPSHOT/SectorSanitarioFacade/local-es.caib.mataderos.back.persistence.ejb3.SectorSanitarioFacadeLocal
     
-    public static final String SECTOR_SANITARIO_FACADE_LOCAL =          
+   // public static final String SECTOR_SANITARIO_FACADE_LOCAL =          
             
             
             

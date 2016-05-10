@@ -19,21 +19,22 @@ package es.caib.sgtsic.ejb3;
  *
  * @author gdeignacio
  */
-public class Persistence {
+public class Persistence<T> {
     
-     private static String getUnitName(Class cl){
+
+    public String getUnitName(Class<T> cl) {
         
         Package p = cl.getPackage();
-        
-        String name = p.getImplementationVendor() 
+
+        String name = p.getImplementationVendor()
                 + "_"
                 + p.getImplementationTitle()
-                + "_" 
+                + "_"
                 + "ejb"
                 + "_"
                 + p.getImplementationVersion() + "PU";
-        
+
         return name;
     }
-    
+
 }
