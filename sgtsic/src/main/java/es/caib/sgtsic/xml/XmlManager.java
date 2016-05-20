@@ -49,11 +49,17 @@ public abstract class XmlManager<T> {
     }
 
     private ByteArrayOutputStream marshal(T item) throws JAXBException {
+        
+        return marshal(item, Boolean.TRUE);
+
+    }
+    
+     private ByteArrayOutputStream marshal(T item, boolean formattedOutput) throws JAXBException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
         jaxbMarshaller.marshal(item, baos);
 
         return baos;
@@ -91,6 +97,20 @@ public abstract class XmlManager<T> {
         
     }
     
+    public DataHandler generateFlatXml(List<T> items) throws JAXBException{
+        
+        ByteArrayDataSource bads = new ByteArrayDataSource();
+
+        bads.setContentType("text/plain");
+        
+        byte[] b = generateFlatXmlString(items).getBytes();
+        
+        bads.setBytes(b);
+
+        return new DataHandler(bads);
+        
+    }
+    
   
     public T generateItem(DataHandler document) throws JAXBException, IOException {
         return unmarshal(document.getInputStream());
@@ -102,6 +122,26 @@ public abstract class XmlManager<T> {
 
     }
 
+    
+    public String generateFlatXmlString(T item) throws JAXBException {
+        
+        return marshal(item, Boolean.FALSE).toString();
+
+    }
+    
+    public String generateFlatXmlString(List<T> items) throws JAXBException{
+        
+        StringBuilder mensajes = new StringBuilder();
+        for (T item : items) {
+            mensajes.append(generateFlatXmlString(item));
+            mensajes.append("\n");
+        }
+        return mensajes.toString();
+        
+    }
+    
+    
+    
     public String generateXmlString(T item) throws JAXBException {
 
         return marshal(item).toString();
