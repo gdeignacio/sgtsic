@@ -16,16 +16,25 @@
 package es.caib.sgtsic.xml;
 
 import es.caib.sgtsic.io.ByteArrayDataSource;
+import es.caib.sgtsic.util.DataHandlers;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.activation.DataHandler;
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -48,18 +57,38 @@ public abstract class XmlManager<T> {
         return this.jaxbContext;
     }
 
-    private ByteArrayOutputStream marshal(T item) throws JAXBException {
+    private ByteArrayOutputStream marshal(T item, DataHandler xsd) throws JAXBException {
         
-        return marshal(item, Boolean.TRUE);
+        return marshal(item, xsd, Boolean.TRUE);
 
     }
     
-     private ByteArrayOutputStream marshal(T item, boolean formattedOutput) throws JAXBException {
+     private ByteArrayOutputStream marshal(T item, DataHandler xsd, boolean formattedOutput) throws JAXBException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
+        
+        SchemaFactory factory = 
+                    SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        
+         if (xsd != null) {
+             InputStream xsdIs;
+             Source xsdSource;
+             Schema schema;
+             try {
+                 xsdIs = new ByteArrayInputStream(DataHandlers.dataHandlerToByteArray(xsd));
+                 xsdSource = new StreamSource(xsdIs);
+                 schema = factory.newSchema(xsdSource);
+                 jaxbMarshaller.setSchema(schema);
+                 jaxbMarshaller.setEventHandler(new XmlValidationEventHandler());
+             } catch (IOException | SAXException ex) {
+                 Logger.getLogger(XmlManager.class.getName()).log(Level.SEVERE, null, ex);
+             }
+         }
+        
+        
         jaxbMarshaller.marshal(item, baos);
 
         return baos;
@@ -72,24 +101,24 @@ public abstract class XmlManager<T> {
 
     }
 
-    public DataHandler generateXml(T item) throws JAXBException {
+    public DataHandler generateXml(T item, DataHandler xsd) throws JAXBException {
 
         ByteArrayDataSource bads = new ByteArrayDataSource();
 
         bads.setContentType("application/xml");
-        bads.setBytes(marshal(item).toByteArray());
+        bads.setBytes(marshal(item, xsd).toByteArray());
 
         return new DataHandler(bads);
 
     }
     
-    public DataHandler generateXml(List<T> items) throws JAXBException{
+    public DataHandler generateXml(List<T> items, DataHandler xsd) throws JAXBException{
         
         ByteArrayDataSource bads = new ByteArrayDataSource();
 
         bads.setContentType("text/plain");
         
-        byte[] b = generateXmlString(items).getBytes();
+        byte[] b = generateXmlString(items, xsd).getBytes();
         
         bads.setBytes(b);
 
@@ -97,13 +126,13 @@ public abstract class XmlManager<T> {
         
     }
     
-    public DataHandler generateFlatXml(List<T> items) throws JAXBException{
+    public DataHandler generateFlatXml(List<T> items, DataHandler xsd) throws JAXBException{
         
         ByteArrayDataSource bads = new ByteArrayDataSource();
 
         bads.setContentType("text/plain");
         
-        byte[] b = generateFlatXmlString(items).getBytes();
+        byte[] b = generateFlatXmlString(items, xsd).getBytes();
         
         bads.setBytes(b);
 
@@ -116,24 +145,24 @@ public abstract class XmlManager<T> {
         return unmarshal(document.getInputStream());
     }
 
-    public byte[] generateXmlByteArray(T item) throws JAXBException {
+    public byte[] generateXmlByteArray(T item, DataHandler xsd) throws JAXBException {
 
-        return marshal(item).toByteArray();
+        return marshal(item,xsd).toByteArray();
 
     }
 
     
-    public String generateFlatXmlString(T item) throws JAXBException {
+    public String generateFlatXmlString(T item, DataHandler xsd) throws JAXBException {
         
-        return marshal(item, Boolean.FALSE).toString();
+        return marshal(item, xsd, Boolean.FALSE).toString();
 
     }
     
-    public String generateFlatXmlString(List<T> items) throws JAXBException{
+    public String generateFlatXmlString(List<T> items, DataHandler xsd) throws JAXBException{
         
         StringBuilder mensajes = new StringBuilder();
         for (T item : items) {
-            mensajes.append(generateFlatXmlString(item));
+            mensajes.append(generateFlatXmlString(item, xsd));
             mensajes.append("\n");
         }
         return mensajes.toString();
@@ -142,17 +171,17 @@ public abstract class XmlManager<T> {
     
     
     
-    public String generateXmlString(T item) throws JAXBException {
+    public String generateXmlString(T item, DataHandler xsd) throws JAXBException {
 
-        return marshal(item).toString();
+        return marshal(item, xsd).toString();
 
     }
     
-    public String generateXmlString(List<T> items) throws JAXBException{
+    public String generateXmlString(List<T> items, DataHandler xsd) throws JAXBException{
         
         StringBuilder mensajes = new StringBuilder();
         for (T item : items) {
-            mensajes.append(generateXmlString(item));
+            mensajes.append(generateXmlString(item, xsd));
         }
         return mensajes.toString();
         

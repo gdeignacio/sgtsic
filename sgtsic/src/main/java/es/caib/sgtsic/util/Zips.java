@@ -15,7 +15,6 @@
  */
 package es.caib.sgtsic.util;
 
-import es.caib.sgtsic.util.DataHandlers;
 import com.google.common.io.ByteStreams;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
