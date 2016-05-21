@@ -15,7 +15,7 @@
  */
 package es.caib.sgtsic.xml;
 
-import es.caib.sgtsic.io.ByteArrayDataSource;
+import javax.mail.util.ByteArrayDataSource;
 import es.caib.sgtsic.util.DataHandlers;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -34,6 +35,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 
 /**
@@ -74,13 +76,13 @@ public abstract class XmlManager<T> {
                     SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         
          if (xsd != null) {
-             InputStream xsdIs;
-             Source xsdSource;
-             Schema schema;
+             //InputStream xsdIs;
+             //Source xsdSource;
+             //Schema schema;
              try {
-                 xsdIs = new ByteArrayInputStream(DataHandlers.dataHandlerToByteArray(xsd));
-                 xsdSource = new StreamSource(xsdIs);
-                 schema = factory.newSchema(xsdSource);
+                 InputStream xsdIs = new ByteArrayInputStream(DataHandlers.dataHandlerToByteArray(xsd));
+                 Source xsdSource = new StreamSource(xsdIs);
+                 Schema schema = factory.newSchema(xsdSource);
                  jaxbMarshaller.setSchema(schema);
                  jaxbMarshaller.setEventHandler(new XmlValidationEventHandler());
              } catch (IOException | SAXException ex) {
@@ -102,41 +104,29 @@ public abstract class XmlManager<T> {
     }
 
     public DataHandler generateXml(T item, DataHandler xsd) throws JAXBException {
-
-        ByteArrayDataSource bads = new ByteArrayDataSource();
-
-        bads.setContentType("application/xml");
-        bads.setBytes(marshal(item, xsd).toByteArray());
-
-        return new DataHandler(bads);
+        
+        byte[] b = marshal(item, xsd).toByteArray();
+        String mimetype = "application/xml";
+        DataSource ds = new ByteArrayDataSource(b, mimetype);
+        return new DataHandler(ds);
 
     }
     
     public DataHandler generateXml(List<T> items, DataHandler xsd) throws JAXBException{
         
-        ByteArrayDataSource bads = new ByteArrayDataSource();
-
-        bads.setContentType("text/plain");
-        
         byte[] b = generateXmlString(items, xsd).getBytes();
-        
-        bads.setBytes(b);
-
-        return new DataHandler(bads);
+        String mimetype = "text/plain";
+        DataSource ds = new ByteArrayDataSource(b, mimetype);
+        return new DataHandler(ds);
         
     }
     
     public DataHandler generateFlatXml(List<T> items, DataHandler xsd) throws JAXBException{
         
-        ByteArrayDataSource bads = new ByteArrayDataSource();
-
-        bads.setContentType("text/plain");
-        
         byte[] b = generateFlatXmlString(items, xsd).getBytes();
-        
-        bads.setBytes(b);
-
-        return new DataHandler(bads);
+        String mimetype = "text/plain";
+        DataSource ds = new ByteArrayDataSource(b, mimetype);
+        return new DataHandler(ds);
         
     }
     
@@ -163,7 +153,7 @@ public abstract class XmlManager<T> {
         StringBuilder mensajes = new StringBuilder();
         for (T item : items) {
             mensajes.append(generateFlatXmlString(item, xsd));
-            mensajes.append("\n");
+            mensajes.append(IOUtils.LINE_SEPARATOR);
         }
         return mensajes.toString();
         

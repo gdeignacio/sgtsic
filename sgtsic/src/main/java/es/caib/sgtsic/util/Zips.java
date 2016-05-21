@@ -15,7 +15,6 @@
  */
 package es.caib.sgtsic.util;
 
-import com.google.common.io.ByteStreams;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,6 +23,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.activation.DataHandler;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -41,7 +41,7 @@ public class Zips {
             InputStream is = new ByteArrayInputStream(DataHandlers.dataHandlerToByteArray(documents.get(key)));
             ZipEntry zipEntry = new ZipEntry(key);
             zip.putNextEntry(zipEntry);
-            ByteStreams.copy(is, zip);
+            IOUtils.copy(is, zip);
             zip.closeEntry();
             is.close();
         }

@@ -15,16 +15,18 @@
  */
 package es.caib.sgtsic.util;
 
-import es.caib.sgtsic.io.ByteArrayDataSource;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
+import org.apache.commons.io.IOUtils;
+
 
 /**
  *
@@ -33,9 +35,10 @@ import javax.activation.DataHandler;
 public class DataHandlers {
 
     public static byte[] dataHandlerToByteArray(DataHandler dataHandler) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        dataHandler.writeTo(output);
-        return output.toByteArray();
+        
+        InputStream is = dataHandler.getInputStream();
+        return IOUtils.toByteArray(is);
+        
     }
 
     public static DataHandler byteArrayToDataHandler(byte[] arrayByte, String mimetype) {
@@ -57,7 +60,7 @@ public class DataHandlers {
             Logger.getLogger(DataHandlers.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        ByteArrayDataSource dataSource = new ByteArrayDataSource(arrayByte, mimetype);
+        DataSource dataSource = new ByteArrayDataSource(arrayByte, mimetype);
 
         return new DataHandler(dataSource);
 
