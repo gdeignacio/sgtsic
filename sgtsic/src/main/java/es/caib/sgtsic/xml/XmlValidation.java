@@ -43,15 +43,10 @@ public class XmlValidation {
             SchemaFactory factory = 
                     SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             
-            InputStream xsdIs = new ByteArrayInputStream(DataHandlers.dataHandlerToByteArray(xsd));
-            Source xsdSource = new StreamSource(xsdIs);
+            Source xsdSource = new StreamSource(xsd.getInputStream());
             Schema schema = factory.newSchema(xsdSource);
-            
             Validator validator = schema.newValidator();
-            
-            InputStream xmlIs = new ByteArrayInputStream(DataHandlers.dataHandlerToByteArray(xml));
-            Source xmlSource = new StreamSource(xmlIs);
-            
+            Source xmlSource = new StreamSource(xml.getInputStream());
             validator.validate(xmlSource);
             
         } catch (IOException | SAXException e) {

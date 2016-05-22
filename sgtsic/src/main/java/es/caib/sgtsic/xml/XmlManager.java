@@ -16,27 +16,18 @@
 package es.caib.sgtsic.xml;
 
 import javax.mail.util.ByteArrayDataSource;
-import es.caib.sgtsic.util.DataHandlers;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import org.apache.commons.io.IOUtils;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -50,7 +41,7 @@ public abstract class XmlManager<T> {
     private final JAXBContext jaxbContext;
 
     public XmlManager(Class<T> clazz) throws JAXBException {
-        
+
         this.clazz = clazz;
         this.jaxbContext = JAXBContext.newInstance(clazz);
     }
@@ -59,38 +50,19 @@ public abstract class XmlManager<T> {
         return this.jaxbContext;
     }
 
-    private ByteArrayOutputStream marshal(T item, DataHandler xsd) throws JAXBException {
-        
-        return marshal(item, xsd, Boolean.TRUE);
+    private ByteArrayOutputStream marshal(T item) throws JAXBException {
+
+        return marshal(item, Boolean.TRUE);
 
     }
-    
-     private ByteArrayOutputStream marshal(T item, DataHandler xsd, boolean formattedOutput) throws JAXBException {
+
+    private ByteArrayOutputStream marshal(T item, boolean formattedOutput) throws JAXBException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
-        
-        SchemaFactory factory = 
-                    SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        
-         if (xsd != null) {
-             //InputStream xsdIs;
-             //Source xsdSource;
-             //Schema schema;
-             try {
-                 InputStream xsdIs = new ByteArrayInputStream(DataHandlers.dataHandlerToByteArray(xsd));
-                 Source xsdSource = new StreamSource(xsdIs);
-                 Schema schema = factory.newSchema(xsdSource);
-                 jaxbMarshaller.setSchema(schema);
-                 jaxbMarshaller.setEventHandler(new XmlValidationEventHandler());
-             } catch (IOException | SAXException ex) {
-                 Logger.getLogger(XmlManager.class.getName()).log(Level.SEVERE, null, ex);
-             }
-         }
-        
-        
+
         jaxbMarshaller.marshal(item, baos);
 
         return baos;
@@ -103,78 +75,81 @@ public abstract class XmlManager<T> {
 
     }
 
-    public DataHandler generateXml(T item, DataHandler xsd) throws JAXBException {
-        
-        byte[] b = marshal(item, xsd).toByteArray();
+    public DataHandler generateXml(T item) throws JAXBException {
+
+        byte[] b = marshal(item).toByteArray();
         String mimetype = "application/xml";
         DataSource ds = new ByteArrayDataSource(b, mimetype);
         return new DataHandler(ds);
 
     }
-    
-    public DataHandler generateXml(List<T> items, DataHandler xsd) throws JAXBException{
-        
-        byte[] b = generateXmlString(items, xsd).getBytes();
+
+    public DataHandler generateXml(List<T> items) throws JAXBException {
+
+        byte[] b = generateXmlString(items).getBytes();
         String mimetype = "text/plain";
         DataSource ds = new ByteArrayDataSource(b, mimetype);
         return new DataHandler(ds);
-        
+
     }
-    
-    public DataHandler generateFlatXml(List<T> items, DataHandler xsd) throws JAXBException{
-        
-        byte[] b = generateFlatXmlString(items, xsd).getBytes();
+
+    public DataHandler generateFlatXml(List<T> items) throws JAXBException {
+
+        byte[] b = generateFlatXmlString(items).getBytes();
         String mimetype = "text/plain";
         DataSource ds = new ByteArrayDataSource(b, mimetype);
         return new DataHandler(ds);
-        
+
     }
-    
-  
+
     public T generateItem(DataHandler document) throws JAXBException, IOException {
         return unmarshal(document.getInputStream());
     }
 
-    public byte[] generateXmlByteArray(T item, DataHandler xsd) throws JAXBException {
+    public byte[] generateXmlByteArray(T item) throws JAXBException {
 
-        return marshal(item,xsd).toByteArray();
+        return marshal(item).toByteArray();
+
+    }
+
+    public String generateFlatXmlString(T item) throws JAXBException {
+
+        return marshal(item, Boolean.FALSE).toString();
 
     }
 
-    
-    public String generateFlatXmlString(T item, DataHandler xsd) throws JAXBException {
-        
-        return marshal(item, xsd, Boolean.FALSE).toString();
+    public String generateFlatXmlString(List<T> items) throws JAXBException {
 
-    }
-    
-    public String generateFlatXmlString(List<T> items, DataHandler xsd) throws JAXBException{
-        
         StringBuilder mensajes = new StringBuilder();
         for (T item : items) {
-            mensajes.append(generateFlatXmlString(item, xsd));
+            mensajes.append(generateFlatXmlString(item));
             mensajes.append(IOUtils.LINE_SEPARATOR);
         }
         return mensajes.toString();
-        
-    }
-    
-    
-    
-    public String generateXmlString(T item, DataHandler xsd) throws JAXBException {
-
-        return marshal(item, xsd).toString();
 
     }
-    
-    public String generateXmlString(List<T> items, DataHandler xsd) throws JAXBException{
-        
+
+    public String generateXmlString(T item) throws JAXBException {
+
+        return marshal(item).toString();
+
+    }
+
+    public String generateXmlString(List<T> items) throws JAXBException {
+
         StringBuilder mensajes = new StringBuilder();
         for (T item : items) {
-            mensajes.append(generateXmlString(item, xsd));
+            mensajes.append(generateXmlString(item));
         }
         return mensajes.toString();
+
+    }
+    
+    
+    public boolean validateItem(T item, DataHandler xsd) throws JAXBException{
         
+        return XmlValidation.validateXMLSchema(xsd, generateXml(item));
+    
     }
 
 }
