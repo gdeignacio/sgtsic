@@ -30,22 +30,10 @@ public abstract class AbstractFacade<T> {
 
     protected static Log log = LogFactory.getLog(AbstractFacade.class);
     
+    protected final static String unitName = "defaultPU";
+    
     private final Class<T> entityClass;
     
-    private String getUnitName(Class<T> cl) {
-        
-        Package p = cl.getPackage();
-
-        String name = p.getImplementationVendor()
-                + "_"
-                + p.getImplementationTitle()
-                + "_"
-                + "ejb"
-                + "_"
-                + p.getImplementationVersion() + "PU";
-
-        return name;
-    }
     
    
     /**

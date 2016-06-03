@@ -20,12 +20,8 @@ package es.caib.sgtsic.xml;
  * @author gdeignacio
  */
 
-import es.caib.sgtsic.util.DataHandlers;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import javax.activation.DataHandler;
- 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -40,9 +36,7 @@ public class XmlValidation {
     public static boolean validateXMLSchema(DataHandler xsd, DataHandler xml){
          
         try {
-            SchemaFactory factory = 
-                    SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Source xsdSource = new StreamSource(xsd.getInputStream());
             Schema schema = factory.newSchema(xsdSource);
             Validator validator = schema.newValidator();
