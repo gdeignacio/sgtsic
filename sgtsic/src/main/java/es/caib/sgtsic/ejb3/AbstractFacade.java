@@ -30,7 +30,7 @@ public abstract class AbstractFacade<T> {
 
     protected static Log log = LogFactory.getLog(AbstractFacade.class);
     
-    protected final static String unitName = "defaultPU";
+    
     
     private final Class<T> entityClass;
     
@@ -46,6 +46,9 @@ public abstract class AbstractFacade<T> {
 
     protected abstract EntityManager getEntityManager();
     
+    //public static String getUnitName(){
+    //    return unitName;
+    //}
     
 
     public void create(T entity) {
@@ -81,9 +84,9 @@ public abstract class AbstractFacade<T> {
     
     private int childrenCount(Object id, Class entityChild, Class mappedBy) {
 
-        log.debug("Entramos a countChilds");
-        log.debug("Entramos a countChilds" + entityChild);
-        log.debug("Entramos a countChilds" + mappedBy);
+        log.debug("Entramos a childrenCount");
+        log.debug("Entramos a childrenCount" + entityChild);
+        log.debug("Entramos a childrenCount" + mappedBy);
         
         String namedQueryName = entityChild.getSimpleName() + ".findCountBy" + entityClass.getSimpleName();
 
@@ -92,7 +95,7 @@ public abstract class AbstractFacade<T> {
                 .getSingleResult()).intValue();
         
         
-         log.debug("Entramos a countChilds resultado" + count);
+         log.debug("Entramos a childrenCount resultado" + count);
 
         return count;
     }

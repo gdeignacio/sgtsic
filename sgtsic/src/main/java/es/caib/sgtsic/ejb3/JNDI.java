@@ -25,7 +25,7 @@ public class JNDI {
     
    // public static final String SECTOR_SANITARIO_FACADE_LOCAL =          
             
-            
+    public static final String unitName = "defaultPU";        
             
     public static final String groupid = "es.caib";
     public static final String nomapp = "MATADEROS";
