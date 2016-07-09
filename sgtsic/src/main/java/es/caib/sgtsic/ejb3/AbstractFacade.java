@@ -27,15 +27,11 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractFacade<T> {
     
-
     protected static Log log = LogFactory.getLog(AbstractFacade.class);
-    
-    
     
     private final Class<T> entityClass;
     
     
-   
     /**
      *
      * @param entityClass
@@ -46,9 +42,6 @@ public abstract class AbstractFacade<T> {
 
     protected abstract EntityManager getEntityManager();
     
-    //public static String getUnitName(){
-    //    return unitName;
-    //}
     
 
     public void create(T entity) {
