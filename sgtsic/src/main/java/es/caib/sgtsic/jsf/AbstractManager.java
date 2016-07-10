@@ -5,13 +5,11 @@ package es.caib.sgtsic.jsf;
 //import static es.caib.mataderos.common.definitions.JNDIValues.getFacadeLocalClassName;
 import es.caib.sgtsic.ejb3.AbstractFacadeLocal;
 import static es.caib.sgtsic.ejb3.JNDI.getFacadeLocalClassName;
-import es.caib.sgtsic.jsf.manager.SessionManager;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.faces.context.FacesContext;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -37,6 +35,8 @@ public abstract class AbstractManager<E> {
     }
 
     protected abstract AbstractFacadeLocal<E> getFacade();
+    
+    //protected SesionManager sesionManager;
 
     private List<E> lista;
     private E current;
@@ -146,12 +146,18 @@ public abstract class AbstractManager<E> {
     public void setId(String id) {
         this.id = id;
     }
-
-    public void load(String html) {
-        SessionManager sesionManager = (SessionManager) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("sesionManager");
-        sesionManager.setHtml(html);
-        sesionManager.setManager(this);
+    
+    /*
+    public void setSesionManager(SesionManager sesionManager){
+        this.sesionManager = sesionManager;
     }
+    
+    public SesionManager getSesionManager(){
+        return sesionManager;
+    }*/
+    
+    public abstract void load();
+    
 
     public void populateLista() {
         log.debug("Entramos a lista " + entityClass.getSimpleName());

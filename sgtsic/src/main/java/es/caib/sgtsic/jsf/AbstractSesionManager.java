@@ -7,12 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 
-public class AbstractSessionManager {
+public abstract class AbstractSesionManager {
     
     public static final String IDIOMA_ES = "es";
     public static final String IDIOMA_CA = "ca";
     
-    protected static Log log = LogFactory.getLog(AbstractSessionManager.class);
+    protected static Log log = LogFactory.getLog(AbstractSesionManager.class);
 
     // INIT ------
     public String idioma;
@@ -22,7 +22,7 @@ public class AbstractSessionManager {
 
 
     // CONSTRUCTOR -----
-    public AbstractSessionManager() {
+    public AbstractSesionManager() {
         establecerIdioma(IDIOMA_ES);
     }
 
@@ -51,9 +51,9 @@ public class AbstractSessionManager {
         return "index";
     }
 
+   
     public void load (){
-        AbstractSessionManager sesionManager = (AbstractSessionManager) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("sesionManager");
-        sesionManager.setHtml("inicio");
+        this.html = "inicio";
     }
 
     // GETTERS ------
@@ -88,6 +88,8 @@ public class AbstractSessionManager {
         FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale(idioma));
     }
 
+    
+    
     public AbstractManager getManager() {
         return manager;
     }
